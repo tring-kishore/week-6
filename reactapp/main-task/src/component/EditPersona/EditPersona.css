@@ -1,0 +1,254 @@
+.addPersonaPage{
+  width: 100%;
+  height: 800px;
+  /* background-color: antiquewhite; */
+}
+.image-container{
+  height: 300px;
+  background-color: aquamarine;
+  /* background-image: url('Banner.png'); */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.content{
+  
+  /* background-color: burlywood; */
+  padding: 10px;
+}
+.content .row-2{
+  height: 100%;
+  overflow-x: hidden;
+  /* background-color: aqua; */
+  display: flex;
+  padding: 20px;
+  gap: 15px;
+  justify-content: space-around;
+  flex-wrap: wrap; /* Allow wrapping for responsiveness */
+}
+.content .row-1{
+  height: 100%;
+  overflow-x: hidden;
+  /* background-color: aqua; */
+  display: flex;
+  padding: 20px;
+  gap: 15px;
+  justify-content: space-around;
+  flex-wrap: wrap; /* Allow wrapping for responsiveness */
+}
+.content .row .col {
+  width: 30%; /* Three columns in a row */
+  /* height: 300px; */
+  /* background-color: brown; */
+  padding-left: 20px;
+  padding-top: 10px;
+  
+}
+textarea{
+  display: block;
+  width: 400px;
+  height: 260px;
+  padding-top: 2px;
+  border-radius: 6px;
+  margin-top: 22px;
+  font-size: larger;
+  border: none;
+  outline: none;
+  resize: none;
+}
+.content .row .col {
+  font-size: larger;
+  font-weight: 500;
+}
+.image-section{
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+}
+.btn-upload{
+  width: 130px;
+  height: 40px;
+  font-weight: 700;
+  background-color: black;
+  color: white;
+  border-radius: 9px;
+  cursor: pointer;
+}
+.upload-img-btn{
+  padding-bottom: 23px;
+  padding-right: 30px;
+}
+.image-section .name{
+  padding-left: 40px;
+}
+.last-section{
+  display: flex;
+  justify-content: end;
+  padding: 25px;
+}
+.last-section .btns .add-btn{
+  
+  width: 145px;
+  height: 50px;
+  background-color: #baf2f3;
+  border-radius: 10px;
+  border: none;
+  font-size: smaller;
+  font-weight: 700;
+  
+}
+.last-section .btns .close-btn{
+  width: 145px;
+  height: 50px;
+  background: none;
+  border: none;
+  font-size: medium;
+  font-weight: 700;
+  
+}
+
+.last-section .btns .add-btn svg{
+  margin-top: 4px;
+}
+.popups {
+  display: flex;
+  flex-direction: column;
+  width: 635px;
+  height: 408px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 1);
+  border-radius: 10px;
+  background-color: white;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.popups .upload-btn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-color: white;
+  padding: 20px; 
+  border-radius: 10px; 
+}
+
+.popups .upload-btn label {
+  font-size: 24px; 
+  margin-bottom: 15px; 
+}
+
+.popups .upload-btn input {
+  margin-bottom: 15px;
+}
+.popups .upload-btn button{
+font-size: 16px; 
+  padding: 10px 20px;
+  cursor: pointer; 
+  border: none; 
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+.popups .upload-btn button .cancel{
+  font-size: 16px; 
+  padding: 10px 20px;
+  cursor: pointer; 
+  border: none; 
+  background-color: #f1f1f1;
+  border-radius: 5px;
+}
+
+
+.popups .upload-btn button:hover {
+  background-color: #ddd;
+}
+.popups input{
+font-size: larger;
+left: 55px;
+position: relative;
+}
+.upload-img-btn svg{
+
+position:relative;
+top: 3px;
+}
+.delete-popup{
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(159, 213, 175);
+  width: 400px;
+  height: 283px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+  z-index: 1000; 
+  border-radius: 10px;
+}
+.delete-popup .btn-sections{
+display: flex;
+justify-content: center;
+gap: 20px;
+}
+.delete-popup .upload-btn{
+font-size: 16px; 
+  padding: 10px 20px;
+  cursor: pointer; 
+  border: none; 
+  background-color: #f1f1f1;
+  border-radius: 5px;
+}
+.delete-popup .upload-btn label {
+font-size: 24px; 
+margin-bottom: 15px; 
+text-align: center;
+}
+
+.delete-popup .upload-btn input {
+margin-bottom: 15px;
+}
+
+.delete-popup .upload-btn button {
+font-size: 16px; 
+padding: 10px 20px;
+cursor: pointer; 
+border: none; 
+background-color: #f1f1f1;
+border-radius: 5px;
+}
+.popups .buttons-popup{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between; 
+}
+.popups .buttons-popup .setDefaultImage{
+  position: relative;
+  right: 153px;
+}
+.popups .buttons-popup .closesavebtn{
+  position: relative;
+  /* right: 240px; */
+  left: 160px;
+  color: red;
+  background: none;
+  font-size: larger;
+}
+.popups .buttons-popup .cancels{
+  /* background-color: darkgray; */
+  position: relative;
+  /* left: 390px; */
+}
+.popups .saves-btn{
+  position: relative;
+    /* left: 400px; */
+}
+.delete-popup .upload-btn{
+  align-items: normal;
+}

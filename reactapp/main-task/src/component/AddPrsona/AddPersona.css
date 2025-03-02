@@ -1,0 +1,109 @@
+.popup {
+  display: flex;
+  flex-direction: column;
+  width: 635px; 
+  height: 408px; 
+  position: fixed;
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 1);
+  border-radius: 10px;
+  background-color: white; 
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.popup .upload-btn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.popup .upload-btn label {
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+.popup .upload-btn input {
+  margin-bottom: 15px;
+}
+
+.popup .upload-btn button {
+  font-size: 16px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+.popup .upload-btn button:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
+
+.popup input {
+  font-size: larger;
+  left: 55px;
+  position: relative;
+}
+
+.upload-img-btn svg {
+  position: relative;
+  top: 3px;
+}
+
+.popup .cancel {
+  position: relative;
+  right: 196px;
+}
+
+.popup .save-btn {
+  position: relative;
+  left: 197px;
+}
+
+.error {
+  color: red;
+}
+/* .ql-toolbar {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 1;
+}
+
+.ql-container {
+  height: 200px;
+  overflow-y: auto;
+} */
+
+.textarea{
+  display: block;
+  width: 400px;
+  height: 260px;
+  padding-top: 2px;
+  border-radius: 6px;
+  margin-top: 22px;
+  font-size: larger;
+  font-family: monospace;
+  border: none;
+  outline: none;
+  resize: none;
+  color: fieldtext;
+}
+.ql-container.ql-snow {
+  border: 1px solid #ccc;
+  height: 200px;
+}
+.last-section .btns .close-btn:hover{
+  cursor: pointer;
+}
+.last-section .btns .add-btn:hover{
+  cursor: pointer;
+}

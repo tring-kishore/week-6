@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@apollo/client": "^3.13.1",
+    "express": "^4.21.2",
+    "exprss": "^0.0.1-security",
+    "graphql": "^15.10.1",
+    "pg": "^8.13.3",
+    "postgraphile": "^4.14.0"
+  }
+}
