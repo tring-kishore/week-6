@@ -5,7 +5,7 @@ import logo from '../../tringapps-copy-2.png';
 import './Persona.css';
 import '../InitialPage/InitailPage.css';
 import { useQuery } from '@apollo/client';
-import { PERSONA_QUERY } from './api/PersonaAPI'; // Import the query
+import { PERSONA_QUERY } from './api/PersonaAPI';
 
 const Persona = () => {
   const navigate = useNavigate();
@@ -16,7 +16,6 @@ const Persona = () => {
     variables: { user_Id: currentUser.id }, // Pass the current user's ID
   });
 
-  // Debugging: Log fetched data
   console.log('Fetched Personas:', data);
 
   // Handle loading and error states
@@ -31,6 +30,8 @@ const Persona = () => {
   };
 
   const goToEditPersona = (personaId) => {
+    console.log('the id of persona ', personaId);
+    
     navigate(`/Persona/EditPersona/${personaId}`);
   };
 
@@ -65,10 +66,12 @@ const Persona = () => {
 
               {/* Display Persona Cards */}
               {userPersonas.length === 0 ? (
-                <p>No personas found for the current user.</p>
+                <p></p>
               ) : (
                 userPersonas.map((persona) => (
                   <div className="card" key={persona.id} onClick={() => goToEditPersona(persona.id)}>
+                    
+                    
                     <div className='section-1'>
                       <img
                         src={persona.image || 'default-image-url'} // Fallback for missing image
@@ -80,6 +83,7 @@ const Persona = () => {
                       <div className="content">
                         <h5>{persona.name}</h5>
                         <p>{persona.quote}</p>
+                        <p>{console.log('the persona id is ',persona.id)}</p>
                       </div>
                     </div>
                   </div>

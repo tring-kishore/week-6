@@ -1,36 +1,43 @@
 import React, { useContext, useState, useEffect } from 'react';
 import './EditPersona.css';
-import '../AddPrsona/AddPersona.css';
+// import '../AddPersona/AddPersona.css';
 import defaultImage from '../../Banner.png';
 import { useNavigate, useParams } from 'react-router-dom';
 import { UserContext } from '../../UserContext';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { toastMessage } from '../../ToastMessage';
-
+import { useQuery } from '@apollo/client';
+import { GET_PERSONA_DATA } from './api/EditPersona';
+import { UPDATE_PERSONA } from './api/EditPersona';
+import { useMutation } from '@apollo/client';
+import { DELETE_PERSONA } from './api/EditPersona';
 const EditPersona = () => {
     const navigate = useNavigate();
     const { index } = useParams();
-    const { personas, editPersona, deletePersona, currentUser } = useContext(UserContext);
-
-    // Find the persona to edit
-    const personaToEdit = personas[parseInt(index)];
-
+    console.log('the edit card index is',index);
+    
+    const { editPersona, deletePersona, currentUser } = useContext(UserContext);
+    const [deletePersonaMutation] = useMutation(DELETE_PERSONA);
+    const { loading, data, error } = useQuery(GET_PERSONA_DATA, {
+        variables: { userId: currentUser.id, id: parseInt(index) },
+    });
+    const[updatePersona] = useMutation(UPDATE_PERSONA);
     const [personaData, setPersonaData] = useState({
-        name: personaToEdit?.name || "",
-        quote: personaToEdit?.quote || "",
-        description: personaToEdit?.description || "",
-        attitudes: personaToEdit?.attitudes || "",
-        painPoints: personaToEdit?.painPoints || "",
-        jobNeeds: personaToEdit?.jobNeeds || "",
-        activities: personaToEdit?.activities || "",
-        image: personaToEdit?.image || defaultImage,
+        name: '',
+        quote: '',
+        description: '',
+        attitudes: '',
+        painPoints: '',
+        jobNeeds: '',
+        activities: '',
+        image: defaultImage,
     });
 
     const [editImageState, setEditImageState] = useState(false);
-    const [savedImage, setSavedImage] = useState(personaToEdit?.image || null);
+    const [savedImage, setSavedImage] = useState(defaultImage);
     const [deleteCardState, setDeleteCardState] = useState(false);
     const [previewImage, setPreviewImage] = useState(null);
     const [formSubmitted, setFormSubmitted] = useState(false);
@@ -41,11 +48,11 @@ const EditPersona = () => {
     });
 
     useEffect(() => {
-        if (personaToEdit) {
-            setPersonaData(personaToEdit);
-            setSavedImage(personaToEdit.image);
+        if (data?.allPersonas?.nodes[0]) {
+            setPersonaData(data.allPersonas.nodes[0]);
+            setSavedImage(data.allPersonas.nodes[0].image || defaultImage);
         }
-    }, [personaToEdit]);
+    }, [data]);
 
     const handleInputChanges = (e, field) => {
         setPersonaData((prevData) => ({ ...prevData, [field]: e.target.value }));
@@ -53,12 +60,6 @@ const EditPersona = () => {
 
     const handleSaveData = (value, field) => {
         setPersonaData((prevData) => ({ ...prevData, [field]: value }));
-    };
-
-    const handleRichTextChange = (value) => {
-        const content = new DOMParser().parseFromString(value, 'text/html');
-        const ans = content.body.textContent;
-        return ans;
     };
 
     const handleImageEdit = (value) => {
@@ -105,27 +106,100 @@ const EditPersona = () => {
         return isValid;
     };
 
-    const handleEditPersona = () => {
+
+    const handleEditPersona = async () => {
         setFormSubmitted(true);
-        if (validateFields()) {
-            const updatedPersona = { ...personaData, userId: currentUser }; // Ensure the persona belongs to the current user
-            editPersona(parseInt(index), updatedPersona);
-            navigate('/Persona');
-        } else {
-            console.log("Validation Failed");
+        if(validateFields())
+        {
+            try{
+                const {data} = await updatePersona(
+                    {
+                        variables : {
+                            id: parseInt(index),
+                            name : personaData.name,
+                            quote : personaData.quote,
+                            description : personaData.description,
+                            attitudes : personaData.attitudes,
+                            painPoints : personaData.painPoints,
+                            jobNeeds: personaData.jobNeeds,
+                            activities : personaData.activities,
+                            image : personaData.image,
+                        },
+                    }
+                );
+                if(data?.updatePersonaById?.persona)
+                {
+                    toastMessage("Persona updated Successfully","success");
+                    navigate('/Persona');
+                }
+                else
+                {
+                    toastMessage("Failed to update persona","error");
+                }
+            }
+            catch(error)
+            {
+                console.error("Error updating persona ",error);
+                toastMessage("An error occured while updating","error");
+            }
         }
-    };
+        else
+        {
+            toastMessage("Please Fill the required field","info");
+        }
+    }
+
+    // const handleEditPersona = () => {
+    //     setFormSubmitted(true);
+    //     if (validateFields()) {
+    //         const updatedPersona = { ...personaData, userId: currentUser.id };
+    //         editPersona(parseInt(index), updatedPersona);
+    //         navigate('/Persona');
+    //     } else {
+    //         console.log("Validation Failed");
+    //     }
+    // };
 
     const handleDeleteState = (value) => {
         setDeleteCardState(value);
     };
 
-    const handleDeleteCard = () => {
-        if (personaToEdit) {
-            deletePersona(personaToEdit.id); // Pass the personaId to deletePersona
-            navigate('/Persona');
+    const handleDeleteCard = async () => {
+        if (data?.allPersonas?.nodes[0]) {
+            const personaId = index;
+            console.log("Deleting Persona ID:", personaId); // Debugging line
+            try {
+                const { data: deleteData } = await deletePersonaMutation({
+                    variables: { id: personaId },
+                });
+                console.log("Delete Response:", deleteData); // Debugging line
+    
+                if (deleteData?.deletePersonaById?.persona?.id) {
+                    toastMessage("Persona deleted successfully!", "success");
+                    navigate('/Persona');
+                } else {
+                    toastMessage("Failed to delete persona.", "error");
+                }
+            } catch (error) {
+                console.error("Error deleting persona:", error);
+                toastMessage("An error occurred while deleting persona.", "error");
+            }
+        } else {
+            console.error("No persona found to delete.");
         }
     };
+    
+    // const handleDeleteCard = () => {
+    //     if (data?.allPersonas?.nodes[0]) {
+    //         console.log("th deleting persona is",data.allPersonas.nodes[0]);
+            
+    //         deletePersona(data.allPersonas.nodes[0]);
+    //         console.log(index);
+            
+    //         toastMessage("Persona deleted Successfully","success");
+    //         navigate('/Persona');
+    //     }
+    // };
 
     const triggerFileInput = () => {
         document.getElementById('fileInput').click();
@@ -138,6 +212,9 @@ const EditPersona = () => {
     const settingDefaultImage = () => {
         setPreviewImage(defaultImage);
     };
+
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error...{error.message}</p>;
 
     return (
         <div>
@@ -174,7 +251,7 @@ const EditPersona = () => {
 
             {/* Main form */}
             <div className='addPersonaPage'>
-                <div className="image-container" style={{ backgroundImage: `url(${savedImage ? savedImage : defaultImage})` }}>
+                <div className="image-container" style={{ backgroundImage: `url(${savedImage || defaultImage})` }}>
                     <div className='image-section'>
                         <div className="name">
                             <h5>Person Name</h5>
@@ -199,7 +276,7 @@ const EditPersona = () => {
 
                 {/* Content fields */}
                 <div className="content">
-                <div className="row">
+                    <div className="row">
                         <div className='row-1'>
                             <div className="col">
                                 <label htmlFor="">Notable Quote</label>
@@ -233,7 +310,7 @@ const EditPersona = () => {
                             <div className="col">
                                 <label htmlFor="">Pain Point</label>
                                 {!richTextState.painPoints ? (
-                                    <div className="textarea" onClick={() => setRichTextState((prev) => ({ ...prev, painPoints: true, jobNeeds: false, activities: false, }))} style={{ overflowX: "hidden", overflowY:'auto', maxHeight: "200px" , maxWidth:"100%",scrollbarWidth: "none", msOverflowStyle: "none" , wordWrap:"break-word",whiteSpace:"normal"    }}>
+                                    <div className="textarea" onClick={() => setRichTextState((prev) => ({ ...prev, painPoints: true, jobNeeds: false, activities: false }))}>
                                         {personaData.painPoints ? (
                                             <div dangerouslySetInnerHTML={{ __html: personaData.painPoints }} />
                                         ) : (
@@ -246,7 +323,7 @@ const EditPersona = () => {
                                     <ReactQuill
                                         theme="snow"
                                         value={personaData.painPoints}
-                                        onChange={(value) => setPersonaData((prev) => ({ ...prev, painPoints: value }))}
+                                        onChange={(value) => handleSaveData(value, "painPoints")}
                                         placeholder="What are the highest challenges that the persona faces in their lab?"
                                     />
                                 )}
@@ -255,17 +332,7 @@ const EditPersona = () => {
                             <div className="col">
                                 <label htmlFor="">Jobs / Needs</label>
                                 {!richTextState.jobNeeds ? (
-                                    <div className="textarea"
-                                        onClick={() =>
-                                            setRichTextState((prev) => ({
-                                                ...prev,
-                                                jobNeeds: true,
-                                                painPoints: false,
-                                                activities: false,
-                                            }))
-                                        }
-                                        style={{ overflowX: "hidden", overflowY:'auto', maxHeight: "200px" , maxWidth:"100%",scrollbarWidth: "none", msOverflowStyle: "none" , wordWrap:"break-word",whiteSpace:"normal"    }}
-                                    >
+                                    <div className="textarea" onClick={() => setRichTextState((prev) => ({ ...prev, jobNeeds: true, painPoints: false, activities: false }))}>
                                         {personaData.jobNeeds ? (
                                             <div dangerouslySetInnerHTML={{ __html: personaData.jobNeeds }} />
                                         ) : (
@@ -276,10 +343,9 @@ const EditPersona = () => {
                                     </div>
                                 ) : (
                                     <ReactQuill
-                                        className='quill'
                                         theme="snow"
                                         value={personaData.jobNeeds}
-                                        onChange={(value) => setPersonaData((prev) => ({ ...prev, jobNeeds: value }))}
+                                        onChange={(value) => handleSaveData(value, "jobNeeds")}
                                         placeholder="What are the Persona functional social and emotional needs to be successful"
                                     />
                                 )}
@@ -288,18 +354,7 @@ const EditPersona = () => {
                             <div className="col">
                                 <label htmlFor="">Activities</label>
                                 {!richTextState.activities ? (
-                                    <div
-                                        className="textarea"
-                                        onClick={() =>
-                                            setRichTextState((prev) => ({
-                                                ...prev,
-                                                activities: true,
-                                                painPoints: false,
-                                                jobNeeds: false,
-                                            }))
-                                        }
-                                        style={{ overflowX: "hidden", overflowY:'auto', maxHeight: "200px" , maxWidth:"100%",scrollbarWidth: "none", msOverflowStyle: "none" , wordWrap:"break-word",whiteSpace:"normal"   }}
-                                    >
+                                    <div className="textarea" onClick={() => setRichTextState((prev) => ({ ...prev, activities: true, painPoints: false, jobNeeds: false }))}>
                                         {personaData.activities ? (
                                             <div dangerouslySetInnerHTML={{ __html: personaData.activities }} />
                                         ) : (
@@ -310,10 +365,9 @@ const EditPersona = () => {
                                     </div>
                                 ) : (
                                     <ReactQuill
-                                        className='quill'
                                         theme="snow"
                                         value={personaData.activities}
-                                        onChange={(value) => setPersonaData((prev) => ({ ...prev, activities: value }))}
+                                        onChange={(value) => handleSaveData(value, "activities")}
                                         placeholder="What does the persona like to do in their free time?"
                                     />
                                 )}

@@ -30,6 +30,7 @@ const LogIn = () => {
     setTimeout(() => {
       goToPersona();
     }, 2000);
+    
   };
 
   const errorInvalidData = () => {
